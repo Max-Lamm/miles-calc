@@ -3,20 +3,20 @@
    ============================================================================ */
 
 :root {
-  --navy: #0a2540;
-  --navy-2: #13355f;
-  --ink: #1a1f2c;
-  --muted: #5c6776;
-  --bg: #f4f6fa;
-  --card: #ffffff;
-  --border: #dfe4ec;
-  --accent: #ff7a00;
-  --accent-soft: #fff3e6;
-  --best: #d7f5e0;
+  --navy: #111111;
+  --navy-2: #1a1a1a;
+  --ink: #d4d4d4;
+  --muted: #999999;
+  --bg: #1a1a1a;
+  --card: #222222;
+  --border: #2e2e2e;
+  --accent: #E8554E;
+  --accent-soft: #2a1a1a;
+  --best: #1a3d25;
   --best-border: #29a24a;
-  --save: #0e7a3e;
-  --lose: #a23030;
-  --shadow: 0 1px 3px rgba(10, 37, 64, 0.06), 0 4px 16px rgba(10, 37, 64, 0.06);
+  --save: #4dbb7a;
+  --lose: #e06060;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 * { box-sizing: border-box; }
@@ -24,7 +24,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Raleway', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: var(--bg);
   color: var(--ink);
   line-height: 1.5;
