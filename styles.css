@@ -77,7 +77,7 @@ main > section {
 main > section h2 {
   margin: 0 0 0.75rem;
   font-size: 1.1rem;
-  color: var(--navy);
+  color: var(--ink);
 }
 
 /* Inputs ------------------------------------------------------------------- */
@@ -107,7 +107,7 @@ main > section h2 {
 
 .input-group label {
   font-weight: 600;
-  color: var(--navy);
+  color: var(--ink);
   font-size: 0.95rem;
 }
 
@@ -128,7 +128,7 @@ select {
   padding: 0.6rem 0.75rem;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--card);
   color: var(--ink);
   width: 100%;
   min-height: 44px;
@@ -183,8 +183,8 @@ select:focus {
 }
 
 .results-table thead th {
-  background: #f0f3f8;
-  color: var(--navy);
+  background: #1d1d1d;
+  color: var(--ink);
   font-weight: 600;
   font-size: 0.9rem;
   position: sticky;
@@ -206,7 +206,7 @@ select:focus {
 .results-table tbody th {
   text-align: left;
   font-weight: 600;
-  background: #fafbfd;
+  background: #252525;
 }
 
 .cls-label {
@@ -247,7 +247,7 @@ select:focus {
   background: var(--best);
   border: 1px solid var(--best-border);
   font-weight: 700;
-  color: #0a3d1e;
+  color: #a8e6bf;
   border-radius: 6px;
 }
 .cell-price {
@@ -305,7 +305,7 @@ select:focus {
   padding: 1.5rem 1rem 2rem;
 }
 
-.site-footer a { color: var(--navy); }
+.site-footer a { color: var(--accent); }
 
 /* Mobile tweaks ------------------------------------------------------------ */
 
