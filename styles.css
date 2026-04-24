@@ -1,0 +1,321 @@
+/* ============================================================================
+   MILES Preisrechner — Styles
+   ============================================================================ */
+
+:root {
+  --navy: #0a2540;
+  --navy-2: #13355f;
+  --ink: #1a1f2c;
+  --muted: #5c6776;
+  --bg: #f4f6fa;
+  --card: #ffffff;
+  --border: #dfe4ec;
+  --accent: #ff7a00;
+  --accent-soft: #fff3e6;
+  --best: #d7f5e0;
+  --best-border: #29a24a;
+  --save: #0e7a3e;
+  --lose: #a23030;
+  --shadow: 0 1px 3px rgba(10, 37, 64, 0.06), 0 4px 16px rgba(10, 37, 64, 0.06);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}
+
+/* Header ------------------------------------------------------------------- */
+
+.site-header {
+  background: var(--navy);
+  color: #fff;
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+.site-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: 0.01em;
+}
+.site-header .subtitle {
+  margin: 0.25rem 0 0;
+  color: #b9c7d9;
+  font-size: 0.95rem;
+}
+
+/* Layout ------------------------------------------------------------------- */
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+main > section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+
+main > section h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  color: var(--navy);
+}
+
+/* Inputs ------------------------------------------------------------------- */
+
+.inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 520px) {
+  .inputs { grid-template-columns: 1fr; }
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.input-group.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: var(--navy);
+  font-size: 0.95rem;
+}
+
+.input-with-suffix,
+.input-duo {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.input-with-suffix {
+  position: relative;
+}
+
+input[type="number"],
+select {
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  width: 100%;
+  min-height: 44px;
+}
+
+input[type="number"]:focus,
+select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.input-with-suffix .suffix {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.input-with-suffix input { padding-right: 2.5rem; }
+
+.input-duo input { flex: 2; }
+.input-duo select { flex: 1; min-width: 110px; }
+
+.input-group.inline input {
+  width: 90px;
+}
+
+/* Results table ------------------------------------------------------------ */
+
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -0.5rem;
+}
+
+.results-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.results-table th,
+.results-table td {
+  padding: 0.6rem 0.5rem;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+}
+
+.results-table thead th {
+  background: #f0f3f8;
+  color: var(--navy);
+  font-weight: 600;
+  font-size: 0.9rem;
+  position: sticky;
+  top: 0;
+}
+
+.results-table thead th:first-child {
+  text-align: left;
+}
+
+.results-table .col-sub {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 400;
+  text-transform: lowercase;
+}
+
+.results-table tbody th {
+  text-align: left;
+  font-weight: 600;
+  background: #fafbfd;
+}
+
+.cls-label {
+  display: inline-block;
+  background: var(--navy);
+  color: #fff;
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-right: 0.4rem;
+}
+
+.cls-desc {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+.cls-hint {
+  display: block;
+  color: var(--lose);
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.cell-sub {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 400;
+  margin-bottom: 2px;
+  white-space: nowrap;
+}
+
+.cell { cursor: help; }
+.cell-na { color: var(--muted); cursor: default; }
+.cell-best {
+  background: var(--best);
+  border: 1px solid var(--best-border);
+  font-weight: 700;
+  color: #0a3d1e;
+  border-radius: 6px;
+}
+.cell-price {
+  font-weight: inherit;
+  white-space: nowrap;
+}
+
+.pass-badge {
+  display: inline-block;
+  margin-top: 2px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.pass-silber { background: #dde2ea; color: #3f4654; border: 1px solid #c3cbd8; }
+.pass-gold   { background: #f3d478; color: #594200; border: 1px solid #d9b74e; }
+.pass-platin { background: #e2e3ef; color: #2b2c5b; border: 1px solid #b9bbd1; }
+.pass-black  { background: #1a1a1a; color: #f3c94a; border: 1px solid #000; }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0.75rem 0 0.25rem;
+}
+
+.legend-best { display: inline-flex; align-items: center; gap: 0.35rem; }
+.swatch {
+  display: inline-block;
+  width: 12px; height: 12px;
+  background: var(--best);
+  border: 1px solid var(--best-border);
+  border-radius: 3px;
+}
+
+.assumption {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0.4rem 0 0;
+}
+
+.muted { color: var(--muted); }
+
+/* Footer ------------------------------------------------------------------- */
+
+.site-footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding: 1.5rem 1rem 2rem;
+}
+
+.site-footer a { color: var(--navy); }
+
+/* Mobile tweaks ------------------------------------------------------------ */
+
+@media (max-width: 600px) {
+  .site-header h1 { font-size: 1.3rem; }
+  main { padding: 0.75rem; }
+  main > section { padding: 0.85rem 0.85rem; }
+  .results-table th,
+  .results-table td {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.9rem;
+  }
+}

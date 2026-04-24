@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MILES Preisrechner</title>
+  <meta name="description" content="Vergleiche alle Miles-Tarife und Pässe für deine Fahrt.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>MILES Preisrechner</h1>
+    <p class="subtitle">Alle Tarife und Pässe auf einen Blick.</p>
+  </header>
+
+  <main>
+    <section class="inputs" aria-labelledby="inputs-heading">
+      <h2 id="inputs-heading" class="sr-only">Eingaben</h2>
+      <div class="input-group">
+        <label for="km">Entfernung</label>
+        <div class="input-with-suffix">
+          <input type="number" id="km" inputmode="decimal" min="0" step="1" placeholder="z. B. 50" value="50">
+          <span class="suffix">km</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="duration">Dauer</label>
+        <div class="input-duo">
+          <input type="number" id="duration" inputmode="decimal" min="0" step="1" placeholder="z. B. 4" value="4">
+          <select id="duration-unit" aria-label="Zeiteinheit">
+            <option value="min">Minuten</option>
+            <option value="h" selected>Stunden</option>
+            <option value="tage">Tage</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="results" aria-labelledby="results-heading">
+      <h2 id="results-heading">Alle Tarife im Vergleich</h2>
+      <div class="table-wrapper">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th scope="col">Klasse</th>
+              <th scope="col">Standard<br><span class="col-sub">min/km/park</span></th>
+              <th scope="col">3h</th>
+              <th scope="col">6h</th>
+              <th scope="col">1 Tag</th>
+              <th scope="col">2 Tage</th>
+              <th scope="col">3 Tage</th>
+              <th scope="col">4 Tage</th>
+              <th scope="col">5 Tage</th>
+              <th scope="col">7 Tage</th>
+              <th scope="col">9 Tage</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+      <p class="legend">
+        <span class="legend-best"><span class="swatch"></span> günstigste Option dieser Klasse</span>
+        <span class="legend-na">— nicht anwendbar (Dauer übersteigt Paket oder Paket existiert nicht)</span>
+      </p>
+      <p class="assumption">
+        ℹ Preise enthalten automatisch den günstigsten MILES Pass für diesen Monat, falls ein Pass-Abo + Guthabenabzug die Fahrt billiger macht als der Basistarif. Annahme: Pass nur für einen Monat gebucht (Monatsgebühr voll dieser Fahrt zugerechnet), danach gekündigt. Pro Dauer-Tier wird automatisch die günstigste km-Variante gewählt (z. B. FLEX vs. 1 Tag / 50 km vs. 1 Tag / 150 km) — der Tooltip auf einer Zelle zeigt, welches Paket gewonnen hat und die vollständige Rechnung. Standardtarif schätzt Parkzeit bei Ø 30 km/h Fahrgeschwindigkeit und wird oberhalb 24 h ausgeblendet.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Richtwerte ohne Gewähr. Offizielle Preise in der <a href="https://www.miles-mobility.com/" target="_blank" rel="noopener">MILES App</a>. Kein Bezug zur MILES Mobility GmbH.</p>
+  </footer>
+
+  <script src="calculator.js"></script>
+</body>
+</html>
