@@ -12,6 +12,7 @@
 </head>
 <body>
   <header class="site-header">
+    <a href="https://tools.maxlamm.de" class="back-link" aria-label="Zurück zur Übersicht">← Tools</a>
     <h1>MILES Preisrechner</h1>
     <p class="subtitle">Alle Tarife und Pässe auf einen Blick.</p>
   </header>
@@ -29,11 +30,11 @@
       <div class="input-group">
         <label for="duration">Dauer</label>
         <div class="input-duo">
-          <input type="number" id="duration" inputmode="decimal" min="0" step="1" placeholder="z. B. 4" value="4">
+          <input type="number" id="duration" inputmode="decimal" min="0" step="1" placeholder="z. B. 1" value="1">
           <select id="duration-unit" aria-label="Zeiteinheit">
             <option value="min">Minuten</option>
-            <option value="h" selected>Stunden</option>
-            <option value="tage">Tage</option>
+            <option value="h">Stunden</option>
+            <option value="tage" selected>Tage</option>
           </select>
         </div>
       </div>
