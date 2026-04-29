@@ -22,21 +22,48 @@
       <h2 id="inputs-heading" class="sr-only">Eingaben</h2>
       <div class="input-group">
         <label for="km">Entfernung</label>
-        <div class="input-with-suffix">
-          <input type="number" id="km" inputmode="decimal" min="0" step="1" placeholder="z. B. 50" value="50">
-          <span class="suffix">km</span>
+        <div class="km-mode-toggle" role="group" aria-label="Eingabemodus">
+          <button class="km-mode-btn active" id="btn-manual" type="button">Kilometer</button>
+          <button class="km-mode-btn" id="btn-route" type="button">Route berechnen</button>
+        </div>
+        <div class="route-inputs" id="route-section" hidden>
+          <div class="autocomplete-wrap">
+            <input type="text" id="route-start" placeholder="Startort, z. B. Berlin Mitte" autocomplete="off">
+            <ul class="autocomplete-list" id="ac-start" hidden role="listbox"></ul>
+          </div>
+          <div class="autocomplete-wrap">
+            <input type="text" id="route-end" placeholder="Zielort, z. B. Hamburg HBF" autocomplete="off">
+            <ul class="autocomplete-list" id="ac-end" hidden role="listbox"></ul>
+          </div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="route-return">
+            Hin- und Rückfahrt
+          </label>
+          <button type="button" id="route-calc-btn">Entfernung berechnen</button>
+          <p class="route-result" id="route-result" hidden></p>
+        </div>
+        <div id="km-section">
+          <div class="input-with-suffix">
+            <input type="number" id="km" inputmode="decimal" min="0" max="500" step="5" placeholder="z. B. 50" value="50">
+            <span class="suffix">km</span>
+          </div>
+          <input type="range" id="km-slider" min="0" max="500" step="5" value="50" aria-label="Entfernung in km">
         </div>
       </div>
-      <div class="input-group">
-        <label for="duration">Dauer</label>
-        <div class="input-duo">
-          <input type="number" id="duration" inputmode="decimal" min="0" step="1" placeholder="z. B. 1" value="1">
-          <select id="duration-unit" aria-label="Zeiteinheit">
-            <option value="min">Minuten</option>
-            <option value="h">Stunden</option>
-            <option value="tage" selected>Tage</option>
-          </select>
+      <div class="input-group input-group--datetime">
+        <div class="datetime-pair">
+          <div class="datetime-field">
+            <label for="dt-start">Von</label>
+            <input type="datetime-local" id="dt-start">
+          </div>
+          <div class="datetime-field">
+            <label for="dt-end">Bis</label>
+            <input type="datetime-local" id="dt-end">
+          </div>
         </div>
+        <p class="datetime-error" id="datetime-error" role="alert" aria-live="polite" hidden>
+          „Bis" muss nach „Von" liegen.
+        </p>
       </div>
     </section>
 

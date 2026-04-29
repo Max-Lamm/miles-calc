@@ -20,6 +20,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 html, body {
   margin: 0;
@@ -332,4 +333,264 @@ select:focus {
     padding: 0.5rem 0.4rem;
     font-size: 0.9rem;
   }
+}
+
+/* Km-Slider ---------------------------------------------------------------- */
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 10% 100%;
+  background-repeat: no-repeat;
+  outline: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--card);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--card);
+}
+
+input[type="range"]:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Km-Modus-Toggle ---------------------------------------------------------- */
+
+.km-mode-toggle {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-top: 0.5rem;
+}
+
+.km-mode-btn {
+  flex: 1;
+  padding: 0.45rem 0.5rem;
+  background: var(--card);
+  color: var(--muted);
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+}
+
+.km-mode-btn + .km-mode-btn {
+  border-left: 1px solid var(--border);
+}
+
+.km-mode-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.km-mode-btn:hover:not(.active) {
+  background: var(--navy-2);
+  color: var(--ink);
+}
+
+/* Route-Eingabe ------------------------------------------------------------ */
+
+.route-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.route-inputs input[type="text"] {
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  width: 100%;
+  min-height: 44px;
+}
+
+.route-inputs input[type="text"]::placeholder { color: var(--muted); }
+
+.route-inputs input[type="text"]:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--ink);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+#route-calc-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  min-height: 44px;
+  transition: opacity 0.15s;
+}
+
+#route-calc-btn:hover { opacity: 0.85; }
+#route-calc-btn:disabled { opacity: 0.5; cursor: default; }
+
+.route-result {
+  font-size: 0.85rem;
+  color: var(--save);
+  margin: 0;
+}
+
+.route-result--error { color: var(--lose); }
+
+/* Autocomplete-Dropdown ---------------------------------------------------- */
+
+.autocomplete-wrap {
+  position: relative;
+}
+
+.autocomplete-list {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  background: #2a2a2a;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.autocomplete-list li {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  gap: 0.1rem;
+}
+
+.autocomplete-list li:hover,
+.autocomplete-list li.ac-active {
+  background: var(--accent-soft);
+}
+
+.ac-main {
+  font-size: 0.9rem;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ac-sub {
+  font-size: 0.75rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Datetime-Picker ---------------------------------------------------------- */
+
+.input-group--datetime {
+  grid-column: 1 / -1;
+}
+
+.datetime-pair {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.datetime-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.datetime-field label {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+input[type="datetime-local"] {
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  width: 100%;
+  min-height: 44px;
+  color-scheme: dark;
+}
+
+input[type="datetime-local"]:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+input[type="datetime-local"].is-invalid {
+  border-color: var(--lose);
+  outline: 2px solid var(--lose);
+  outline-offset: 1px;
+}
+
+.datetime-error {
+  color: var(--lose);
+  font-size: 0.85rem;
+  margin: 0.35rem 0 0;
+}
+
+@media (max-width: 400px) {
+  .datetime-pair { flex-direction: column; }
 }

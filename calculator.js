@@ -281,14 +281,24 @@ function parseNum(value) {
   return Number.isFinite(n) ? n : NaN;
 }
 
-// Dauer-Eingabe + Einheit → Minuten.
-function toMinutes(value, unit) {
-  const n = parseNum(value);
-  if (!Number.isFinite(n) || n < 0) return NaN;
-  if (unit === "min")  return n;
-  if (unit === "h")    return n * 60;
-  if (unit === "tage") return n * 60 * 24;
-  return NaN;
+function nextFullHour(date) {
+  const d = new Date(date);
+  if (d.getMinutes() > 0 || d.getSeconds() > 0 || d.getMilliseconds() > 0) {
+    d.setHours(d.getHours() + 1, 0, 0, 0);
+  } else {
+    d.setSeconds(0, 0);
+  }
+  const pad = n => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function toMinutes() {
+  const startVal = document.getElementById("dt-start").value;
+  const endVal   = document.getElementById("dt-end").value;
+  if (!startVal || !endVal) return NaN;
+  const diffMs = new Date(endVal).getTime() - new Date(startVal).getTime();
+  if (!Number.isFinite(diffMs) || diffMs <= 0) return NaN;
+  return diffMs / 60000;
 }
 
 function breakdownText(option) {
@@ -324,9 +334,19 @@ function renderEmpty() {
 
 function render() {
   const km = parseNum(document.getElementById("km").value);
-  const dur = document.getElementById("duration").value;
-  const unit = document.getElementById("duration-unit").value;
-  const durationMin = toMinutes(dur, unit);
+  const durationMin = toMinutes();
+
+  const startVal = document.getElementById("dt-start").value;
+  const endVal   = document.getElementById("dt-end").value;
+  const hasTimeError = startVal && endVal &&
+    new Date(endVal).getTime() <= new Date(startVal).getTime();
+
+  const errorEl = document.getElementById("datetime-error");
+  const dtEnd   = document.getElementById("dt-end");
+  const dtStart = document.getElementById("dt-start");
+  if (errorEl) errorEl.hidden = !hasTimeError;
+  if (dtEnd)   dtEnd.classList.toggle("is-invalid", !!hasTimeError);
+  if (dtStart) dtStart.classList.toggle("is-invalid", !!hasTimeError);
 
   if (!Number.isFinite(km) || km < 0 || !Number.isFinite(durationMin)) {
     renderEmpty();
@@ -404,16 +424,225 @@ function buildCell(option, bestOfClass) {
   return td;
 }
 
+// ----- Streckenberechnung (Nominatim + OSRM) --------------------------------
+
+const selectedCoords = { start: null, end: null };
+
+async function nominatimSearch(query) {
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}`
+    + `&format=json&limit=5&addressdetails=0&countrycodes=de,at,ch,lu`
+    + `&viewbox=5.87,47.27,15.04,55.06&bounded=0`;
+  const res  = await fetch(url, { headers: { "Accept-Language": "de", "User-Agent": "MILES-Preisrechner/1.0" } });
+  return res.json();
+}
+
+function renderSuggestions(results, listEl, inputEl, key) {
+  listEl.innerHTML = "";
+  if (!results.length) { listEl.hidden = true; return; }
+  for (const r of results) {
+    const li = document.createElement("li");
+    li.setAttribute("role", "option");
+    li.dataset.lat = r.lat;
+    li.dataset.lon = r.lon;
+    const parts = r.display_name.split(", ");
+    const main  = parts.slice(0, 2).join(", ");
+    const sub   = parts.slice(2, 4).join(", ");
+    li.innerHTML = `<span class="ac-main">${main}</span>${sub ? `<span class="ac-sub">${sub}</span>` : ""}`;
+    li.addEventListener("mousedown", e => {
+      e.preventDefault();
+      selectSuggestion(li, inputEl, listEl, key);
+    });
+    listEl.appendChild(li);
+  }
+  listEl.hidden = false;
+}
+
+function selectSuggestion(li, inputEl, listEl, key) {
+  inputEl.value = li.querySelector(".ac-main").textContent;
+  selectedCoords[key] = { lat: li.dataset.lat, lon: li.dataset.lon };
+  listEl.hidden = true;
+  if (selectedCoords.start && selectedCoords.end) calcRoute();
+}
+
+function setupAutocomplete(inputEl, listEl, key) {
+  let timer;
+  inputEl.addEventListener("input", () => {
+    selectedCoords[key] = null;
+    clearTimeout(timer);
+    const query = inputEl.value.trim();
+    if (query.length < 3) { listEl.hidden = true; return; }
+    timer = setTimeout(async () => {
+      const results = await nominatimSearch(query);
+      renderSuggestions(results, listEl, inputEl, key);
+    }, 300);
+  });
+
+  inputEl.addEventListener("keydown", e => {
+    if (e.key === "Escape") { listEl.hidden = true; return; }
+    if (listEl.hidden) return;
+    const items  = Array.from(listEl.querySelectorAll("li"));
+    const active = listEl.querySelector("li.ac-active");
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const next = active ? active.nextElementSibling : items[0];
+      active?.classList.remove("ac-active");
+      next?.classList.add("ac-active");
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const prev = active ? active.previousElementSibling : items[items.length - 1];
+      active?.classList.remove("ac-active");
+      prev?.classList.add("ac-active");
+    } else if (e.key === "Enter") {
+      const activeItem = listEl.querySelector("li.ac-active");
+      if (activeItem) { e.preventDefault(); selectSuggestion(activeItem, inputEl, listEl, key); }
+    }
+  });
+
+  inputEl.addEventListener("blur", () => { setTimeout(() => { listEl.hidden = true; }, 150); });
+}
+
+async function calcRoute() {
+  const startVal = document.getElementById("route-start").value.trim();
+  const endVal   = document.getElementById("route-end").value.trim();
+  if (!startVal || !endVal) return;
+
+  const resultEl = document.getElementById("route-result");
+  const calcBtn  = document.getElementById("route-calc-btn");
+  resultEl.textContent = "Berechnung läuft…";
+  resultEl.className = "route-result";
+  resultEl.hidden = false;
+  calcBtn.disabled = true;
+
+  try {
+    const fromResults = selectedCoords.start ? [selectedCoords.start] : await nominatimSearch(startVal);
+    const toResults   = selectedCoords.end   ? [selectedCoords.end]   : await nominatimSearch(endVal);
+    const from = selectedCoords.start || fromResults[0];
+    const to   = selectedCoords.end   || toResults[0];
+
+    if (!from || !to) {
+      resultEl.textContent = !from
+        ? `Startort „${startVal}" nicht gefunden.`
+        : `Zielort „${endVal}" nicht gefunden.`;
+      resultEl.classList.add("route-result--error");
+      return;
+    }
+
+    const url  = `https://router.project-osrm.org/route/v1/driving/${from.lon},${from.lat};${to.lon},${to.lat}?overview=false`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    const meters = data.routes?.[0]?.distance;
+    if (!meters) {
+      resultEl.textContent = "Route konnte nicht berechnet werden.";
+      resultEl.classList.add("route-result--error");
+      return;
+    }
+
+    const returnTrip = document.getElementById("route-return").checked;
+    const km = Math.round(meters / 1000 / 5) * 5 * (returnTrip ? 2 : 1);
+    resultEl.textContent = returnTrip
+      ? `≈ ${km} km übernommen (Hin- & Rückfahrt).`
+      : `≈ ${km} km Fahrdistanz übernommen.`;
+
+    const kmInput  = document.getElementById("km");
+    const kmSlider = document.getElementById("km-slider");
+    kmInput.value  = km;
+    kmSlider.value = km;
+    const pct = ((km - kmSlider.min) / (kmSlider.max - kmSlider.min)) * 100;
+    kmSlider.style.backgroundSize = `${pct}% 100%`;
+    document.getElementById("km-section").hidden = false;
+    render();
+  } catch {
+    resultEl.textContent = "Netzwerkfehler – bitte erneut versuchen.";
+    resultEl.classList.add("route-result--error");
+  } finally {
+    calcBtn.disabled = false;
+  }
+}
+
 // ----- Init ------------------------------------------------------------------
 
 function init() {
-  const ids = ["km", "duration", "duration-unit"];
-  for (const id of ids) {
-    const el = document.getElementById(id);
-    if (!el) continue;
-    el.addEventListener("input", render);
-    el.addEventListener("change", render);
+  const kmInput  = document.getElementById("km");
+  const kmSlider = document.getElementById("km-slider");
+
+  function updateSliderFill(slider) {
+    const pct = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+    slider.style.backgroundSize = `${pct}% 100%`;
   }
+
+  if (kmInput && kmSlider) {
+    function snapKm(val) {
+      return Math.min(500, Math.max(0, Math.round((parseFloat(val) || 0) / 5) * 5));
+    }
+    kmInput.addEventListener("input", () => {
+      kmSlider.value = snapKm(kmInput.value);
+      updateSliderFill(kmSlider);
+      render();
+    });
+    kmInput.addEventListener("blur", () => {
+      kmInput.value = snapKm(kmInput.value);
+      kmSlider.value = kmInput.value;
+      updateSliderFill(kmSlider);
+      render();
+    });
+    kmSlider.addEventListener("input", () => {
+      kmInput.value = kmSlider.value;
+      updateSliderFill(kmSlider);
+      render();
+    });
+    updateSliderFill(kmSlider);
+  }
+
+  const btnManual    = document.getElementById("btn-manual");
+  const btnRoute     = document.getElementById("btn-route");
+  const kmSection    = document.getElementById("km-section");
+  const routeSection = document.getElementById("route-section");
+
+  function setMode(mode) {
+    const isRoute = mode === "route";
+    kmSection.hidden    = isRoute;
+    routeSection.hidden = !isRoute;
+    btnManual.classList.toggle("active", !isRoute);
+    btnRoute.classList.toggle("active", isRoute);
+    if (isRoute) {
+      document.getElementById("route-result").hidden = true;
+    }
+  }
+
+  if (btnManual && btnRoute) {
+    btnManual.addEventListener("click", () => setMode("manual"));
+    btnRoute.addEventListener("click",  () => setMode("route"));
+  }
+
+  const routeCalcBtn = document.getElementById("route-calc-btn");
+  if (routeCalcBtn) {
+    routeCalcBtn.addEventListener("click", calcRoute);
+    setupAutocomplete(document.getElementById("route-start"), document.getElementById("ac-start"), "start");
+    setupAutocomplete(document.getElementById("route-end"),   document.getElementById("ac-end"),   "end");
+  }
+
+  const routeReturn = document.getElementById("route-return");
+  if (routeReturn) {
+    routeReturn.addEventListener("change", () => {
+      if (!document.getElementById("route-result").hidden) calcRoute();
+    });
+  }
+
+  const dtStart = document.getElementById("dt-start");
+  const dtEnd   = document.getElementById("dt-end");
+  if (dtStart && dtEnd) {
+    const startStr = nextFullHour(new Date());
+    const endDate  = new Date(startStr);
+    endDate.setDate(endDate.getDate() + 1);
+    dtStart.value = startStr;
+    dtEnd.value   = nextFullHour(endDate);
+
+    [dtStart, dtEnd].forEach(el => {
+      el.addEventListener("input", render);
+      el.addEventListener("change", render);
+    });
+  }
+
   render();
 }
 
