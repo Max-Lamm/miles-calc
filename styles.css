@@ -17,7 +17,15 @@
   --save: #4dbb7a;
   --lose: #e06060;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
+
+  --brand-miles: #E8554E;
+  --brand-sixt: #ff5f00;
+  --brand-free2move: #1c69d4;
 }
+
+.provider-miles { --brand: var(--brand-miles); }
+.provider-sixt { --brand: var(--brand-sixt); }
+.provider-free2move { --brand: var(--brand-free2move); }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -280,10 +288,12 @@ select:focus {
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
-.pass-silber { background: #dde2ea; color: #3f4654; border: 1px solid #c3cbd8; }
-.pass-gold   { background: #f3d478; color: #594200; border: 1px solid #d9b74e; }
-.pass-platin { background: #e2e3ef; color: #2b2c5b; border: 1px solid #b9bbd1; }
-.pass-black  { background: #1a1a1a; color: #f3c94a; border: 1px solid #000; }
+.pass-silber  { background: #dde2ea; color: #3f4654; border: 1px solid #c3cbd8; }
+.pass-gold    { background: #f3d478; color: #594200; border: 1px solid #d9b74e; }
+.pass-platin  { background: #e2e3ef; color: #2b2c5b; border: 1px solid #b9bbd1; }
+.pass-black   { background: #1a1a1a; color: #f3c94a; border: 1px solid #000; }
+.pass-tier50  { background: #d4e4f7; color: #1c4a8c; border: 1px solid #a0c0e8; }
+.pass-tier100 { background: #1c69d4; color: #fff;    border: 1px solid #1558b0; }
 
 .legend {
   display: flex;
@@ -593,4 +603,117 @@ input[type="datetime-local"].is-invalid {
 
 @media (max-width: 400px) {
   .datetime-pair { flex-direction: column; }
+}
+
+/* Best-Overall-Card ---------------------------------------------------------- */
+
+.best-overall-card {
+  background: linear-gradient(135deg, var(--best) 0%, rgba(26, 61, 37, 0.4) 100%);
+  border: 1px solid var(--best-border);
+  border-left: 4px solid var(--brand, var(--best-border));
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.best-overall-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.best-overall-headline {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.35rem 0 0.4rem;
+  flex-wrap: wrap;
+}
+
+.best-overall-provider {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--brand, #fff);
+}
+
+.best-overall-price {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--save);
+}
+
+.best-overall-detail {
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+/* Provider-Tabs -------------------------------------------------------------- */
+
+.provider-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.7rem 1.1rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+
+.tab-btn[aria-selected="true"] {
+  color: var(--brand, var(--accent));
+  border-bottom-color: var(--brand, var(--accent));
+}
+
+.tab-btn:focus-visible {
+  outline: 2px solid var(--brand, var(--accent));
+  outline-offset: -2px;
+}
+
+/* Provider-Panels ----------------------------------------------------------- */
+
+.provider-panel {
+  padding-top: 1rem;
+}
+
+.provider-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0 0 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--navy-2);
+  border-left: 3px solid var(--brand, var(--accent));
+  border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+  .best-overall-headline {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  .best-overall-price { font-size: 1.5rem; }
+  .tab-btn { padding: 0.6rem 0.8rem; font-size: 0.9rem; }
 }
